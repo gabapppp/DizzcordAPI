@@ -5,9 +5,9 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import authenticate
-from accounts.renderers import UserRenderer
+from .renderers import UserRenderer
 from rest_framework_simplejwt.tokens import RefreshToken
-from accounts.serializers import (
+from .serializers import (
     UserRegistrationSerializer, UserLoginSerializer, UserProfileSerializer, UserChangePasswordSerializer, UserPasswordResetSerializer, SendPasswordResetEmailSerializer)
 
 
