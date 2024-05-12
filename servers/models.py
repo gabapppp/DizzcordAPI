@@ -35,14 +35,14 @@ class Server(models.Model):
     #banner = models.ImageField(
     #    upload_to=user_directory_path_banner, null=False)
     title = models.CharField(max_length=144)
-    description = models.CharField(max_length=255, null=False)
+    description = models.CharField(max_length=255, blank=True, default="")
     date = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='server_owner')
     members = models.ManyToManyField(User, related_name='server_members')
     moderators = models.ManyToManyField(User, related_name='server_moderators')
     categories = models.ManyToManyField(Category)
-    server_category = models.ForeignKey(ServerCategory, on_delete=models.CASCADE)
+    server_category = models.ForeignKey(ServerCategory, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self) -> str:
         return self.title

@@ -4,7 +4,7 @@ import secrets
 from datetime import datetime
 
 from asgiref.sync import async_to_sync
-from channels.generic.websocket import WebsocketConsumer
+from channels.generic.websocket import WebsocketConsumer, AsyncConsumer
 from django.core.files.base import ContentFile
 
 from users.models import MyUser
@@ -14,7 +14,6 @@ from .serializers import DirectMessageSerializer, MessageSerializer
 
 class ChatConsumer(WebsocketConsumer):
     def connect(self):
-        print("here")
         self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
         self.room_group_name = f"chat_{self.room_name}"
 
@@ -22,9 +21,7 @@ class ChatConsumer(WebsocketConsumer):
         async_to_sync(self.channel_layer.group_add)(
             self.room_group_name, self.channel_name
         )
-        print("here2")
         self.accept()
-        print("here3")
 
     def disconnect(self, close_code):
         # Leave room group
@@ -97,3 +94,16 @@ class ChatConsumer(WebsocketConsumer):
                     dict_to_be_sent
                 )
             )
+
+class PingConsumer(AsyncConsumer):
+    async def websocket_connect(self, message):
+        await self.send({
+            "type": "websocket.accept",
+        })
+
+    async def websocket_receive(self, message):
+        await asyncio.sleep(1)
+        await self.send({
+            "type": "websocket.send",
+            "text": "pong",
+        })
